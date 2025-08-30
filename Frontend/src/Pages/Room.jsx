@@ -1,10 +1,34 @@
 import React from "react";
 import codeLogo from "../assets/CodeLogo.png";
-
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {ShopContext} from '../Context/Roomcontext'
+import { useContext } from "react";
 const Room = () => {
+  const [roomId,SetRoomId]=useState("");
+  const [userName,setUserName]=useState("")
+  const {socket,joined,setJoined}=useContext(ShopContext)
+  const Nav=useNavigate();
+const RoomDetails=(e)=>{
+  e.preventDefault();
+  if(userName&&roomId){
+    socket.emit("join",{roomId,userName})
+    setJoined(true)
+Nav("/editor/RoomId")
+  }
+
+  console.log(roomId,userName);
+ SetRoomId("");
+ setUserName("");
+
+
+}
+
+
+if(!joined){
   return (
     <div className="min-h-screen px-10 flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
-      <form className="w-full max-w-md p-6 rounded-2xl bg-[#1e1f29] shadow-2xl border hover:scale-105 transition-all duration-300 border-gray-700">
+      <form onSubmit={RoomDetails} className="w-full max-w-md p-6 rounded-2xl bg-[#1e1f29] shadow-2xl border hover:scale-105 transition-all duration-300 border-gray-700">
         {/* Logo + Branding */}
         <div className="flex items-center space-x-3 mb-6">
           <img src={codeLogo} className="h-14 w-14" alt="Code Logo" />
@@ -23,9 +47,11 @@ const Room = () => {
               Room ID
             </label>
             <input
-              type="text"
+              type="type"
               placeholder="Enter Room ID"
               className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-purple-500 outline-none"
+              value={roomId}
+              onChange={(e)=>SetRoomId(e.target.value)}
             />
           </div>
 
@@ -37,6 +63,8 @@ const Room = () => {
               type="text"
               placeholder="Enter Your Name"
               className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-purple-500 outline-none"
+                value={userName}
+              onChange={(e)=>setUserName(e.target.value)}
             />
           </div>
         </div>
@@ -59,6 +87,7 @@ const Room = () => {
       </form>
     </div>
   );
+}
 };
 
 export default Room;
